@@ -9,6 +9,8 @@ ARG host_uid=1001
 ARG host_gid=1001
 ARG BUILD_USER_PWD=pwd
 
+
+RUN rm -rf /var/lib/apt/lists/*
 RUN apt-get update && apt-get install locales
 RUN locale-gen --purge en_US.UTF-8
 RUN update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
