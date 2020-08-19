@@ -29,7 +29,8 @@ RUN apt-get install -y --no-install-recommends apt-utils \
      socat \
      cpio \
      libsdl1.2-dev \
-     xterm
+     xterm \
+     vim
 
 RUN apt-get install -y \
      python \
