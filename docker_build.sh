@@ -8,6 +8,8 @@ docker build --no-cache \
              --build-arg "host_gid=$(id -g)" \
              --build-arg BUILD_USER=$BUILD_USER \
              --build-arg YOCTO_DIR=$YOCTO_DIR \
+             --build-arg ssh_prv_key="$(cat ~/.ssh/id_rsa)" \
+             --build-arg ssh_pub_key="$(cat ~/.ssh/id_rsa.pub)" \
              --tag $DOCKER_IMAGE_TAG \
              $DIR
 

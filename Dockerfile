@@ -8,17 +8,19 @@ ARG BUILD_USER=yoctobuildenv
 ARG host_uid=1001
 ARG host_gid=1001
 ARG BUILD_USER_PWD=pwd
-
+ARG ssh_prv_key
+ARG ssh_pub_key
 
 RUN rm -rf /var/lib/apt/lists/*
-RUN apt-get update && apt-get install locales
+RUN apt-get update && apt-get install locales \
+   && rm -rf /var/lib/apt/lists/*
 RUN locale-gen --purge en_US.UTF-8
 RUN update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
 ENV LC_ALL en_US.UTF-8
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US.UTF-8
 
-RUN apt-get install -y --no-install-recommends apt-utils \
+RUN apt-get update && apt-get install -y --no-install-recommends apt-utils \
      gawk \
      wget \
      git-core \
@@ -32,9 +34,9 @@ RUN apt-get install -y --no-install-recommends apt-utils \
      cpio \
      libsdl1.2-dev \
      xterm \
-     vim
+   && rm -rf /var/lib/apt/lists/*
 
-RUN apt-get install -y \
+RUN apt-get update && apt-get install -y \
      python \
      python3 \
      python3-pip \
@@ -43,7 +45,15 @@ RUN apt-get install -y \
      debianutils \
      iputils-ping \
      file \
-     sudo
+     sudo \
+   && rm -rf /var/lib/apt/lists/*
+
+# Some utils
+RUN apt-get update && apt-get install -y \
+     ssh \
+     vim \
+   && rm -rf /var/lib/apt/lists/*
+
 
 RUN groupadd -g $host_gid $BUILD_USER
 RUN useradd -g $host_gid -m -s /bin/bash -u $host_uid $BUILD_USER
@@ -51,7 +61,19 @@ RUN useradd -g $host_gid -m -s /bin/bash -u $host_uid $BUILD_USER
 RUN echo "$BUILD_USER:$BUILD_USER_PWD" | chpasswd
 RUN usermod -aG sudo $BUILD_USER
 
+ENV HOME=/home/$BUILD_USER
+ENV YOCTO_DIR=$HOME/Yocto
+ENV SSH_DIR=$HOME/.ssh
+ENV ID_RSA_FILE=/$SSH_DIR/id_rsa
+ENV ID_RSA_PUB_FILE=/$SSH_DIR/id_rsa.pub
+
 USER $BUILD_USER
 
-ENV YOCTO_DIR=/home/$BUILD_USER/Yocto
+RUN mkdir -p $SSH_DIR
 RUN mkdir -p $YOCTO_DIR
+
+# Add the keys and set permissions
+RUN echo "$ssh_prv_key" > $ID_RSA_FILE && \
+    echo "$ssh_pub_key" > $ID_RSA_PUB_FILE && \
+    chmod 600 $ID_RSA_FILE && \
+    chmod 600 $ID_RSA_PUB_FILE
