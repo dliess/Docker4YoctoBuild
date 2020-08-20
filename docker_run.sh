@@ -16,7 +16,8 @@ fi
 
 YOCTO_DIR=$(readlink -f $1)
 echo "YOCTO_DIR:$YOCTO_DIR"
-TARGET_DIR=/home/$BUILD_USER/Yocto
+#TARGET_DIR=/home/$BUILD_USER/Yocto
+TARGET_DIR=/workspaces
 echo "TARGET_DIR:$TARGET_DIR"
 
 
