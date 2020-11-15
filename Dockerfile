@@ -82,5 +82,4 @@ RUN echo "$ssh_prv_key" > $ID_RSA_FILE && \
 
 RUN touch $KNOWN_HOSTS_FILE
 RUN ssh-keyscan github.com >> $KNOWN_HOSTS_FILE
-RUN ssh-keyscan server >> $KNOWN_HOSTS_FILE
-
+RUN ssh-keyscan danita-server.com >> $KNOWN_HOSTS_FILE
