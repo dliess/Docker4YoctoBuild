@@ -18,10 +18,13 @@ YOCTO_DIR=$(readlink -f $1)
 echo "YOCTO_DIR:$YOCTO_DIR"
 #TARGET_DIR=/home/$BUILD_USER/Yocto
 TARGET_DIR=/workspaces
+TARGET_HOME=/home/$BUILD_USER
 echo "TARGET_DIR:$TARGET_DIR"
 
 
 docker run --privileged \
        	--mount type=bind,source=$YOCTO_DIR,target=$TARGET_DIR \
-			--workdir $TARGET_DIR \
+		--mount type=bind,source=/etc/hosts,target=/etc/hosts \
+		--mount type=bind,source=${HOME}/.ssh,target=$TARGET_HOME/.ssh \
+		--workdir $TARGET_DIR \
        	-ti $DOCKER_IMAGE_TAG:latest /bin/bash
